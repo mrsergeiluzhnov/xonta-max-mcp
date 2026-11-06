@@ -1,0 +1,41 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ru.xonta/max",
+  "title": "Xonta MAX",
+  "description": "MAX messenger bots and mini-apps: current Bot API, code checks, Telegram migration, deep links",
+  "version": "0.1.0",
+  "websiteUrl": "https://xonta.ru",
+  "repository": {
+    "url": "https://github.com/mrsergeiluzhnov/xonta-max-mcp",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "xonta-max-mcp",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "MAX_BOT_TOKEN",
+          "description": "Optional. Your MAX bot token: enables tools that act as your bot (send messages, webhook, commands)",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "MAX_CA_FILE",
+          "description": "Path to the Russian Trusted Root CA (Минцифры) PEM, needed to reach platform-api2.max.ru",
+          "isRequired": false
+        }
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.xonta.ru/max/mcp"
+    }
+  ]
+}

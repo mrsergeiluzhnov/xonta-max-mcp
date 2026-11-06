@@ -1,0 +1,20 @@
+[Unit]
+Description=Xonta MAX MCP server
+After=network-online.target
+
+[Service]
+User=xmax
+WorkingDirectory=/opt/xonta-max
+# Public server: tools that take a bot token are switched off
+Environment=XONTA_MAX_HOSTED=1
+Environment=ALLOWED_HOSTS=mcp.xonta.ru
+ExecStart=/opt/xonta-max/venv/bin/xonta-max-mcp --http --host 127.0.0.1 --port 8766
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
