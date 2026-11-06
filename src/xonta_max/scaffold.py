@@ -16,7 +16,7 @@ WEBHOOK_SECRET=
 MAX_CA_FILE=/usr/local/share/ca-certificates/russian_trusted_root_ca.crt
 """
 
-GITIGNORE = ".env\n__pycache__/\n.venv/\nnode_modules/\ndist/\nchats.json\n"
+GITIGNORE = ".env\n__pycache__/\n.venv/\nnode_modules/\ndist/\nchats.json\nstarts.jsonl\n"
 
 DOCKER_CERT = f"""RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl \\
  && curl -fsSL {CERT_URL} -o /usr/local/share/ca-certificates/russian_trusted_root_ca.crt \\
@@ -44,6 +44,7 @@ API = "https://platform-api2.max.ru"
 TOKEN = os.environ["MAX_BOT_TOKEN"]
 CA_FILE = os.environ.get("MAX_CA_FILE")  # корневой сертификат Минцифры; не отключайте проверку TLS
 CHATS_FILE = Path(os.environ.get("CHATS_FILE", "chats.json"))
+STARTS_FILE = Path(os.environ.get("STARTS_FILE", "starts.jsonl"))  # учёт переходов по рекламным ссылкам ?start=…
 TEXT_LIMIT = 4000
 
 
@@ -118,6 +119,10 @@ async def handle(update: dict) -> None:
     try:
         if kind == "bot_started":
             chats.add(update["chat_id"]); save_chats(chats)
+            if update.get("payload"):  # id размещения из ссылки ?start=…, для max_ad_report
+                with STARTS_FILE.open("a", encoding="utf-8") as f:
+                    f.write(json.dumps({"ts": update.get("timestamp"), "user_id": (update.get("user") or {}).get("user_id"),
+                                        "payload": update["payload"]}) + "\n")
             await bot.send(update["chat_id"], "**Привет!** Я бот на MAX.", buttons=[[{"type": "callback", "text": "Что умеешь?", "payload": "help"}]])
         elif kind == "bot_added":
             chats.add(update["chat_id"]); save_chats(chats)
@@ -209,7 +214,7 @@ CMD ["python", "bot.py", "webhook"]
 # ---------------------------------------------------------------- typescript
 
 TS_BOT = r"""import { Bot, Keyboard } from '@maxhub/max-bot-api';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, readFileSync, writeFileSync } from 'node:fs';
 
 // Запуск: NODE_EXTRA_CA_CERTS=/путь/russian_trusted_root_ca.crt node --env-file=.env dist/bot.js
 const token = process.env.MAX_BOT_TOKEN;
@@ -226,6 +231,9 @@ bot.api.setMyCommands([{ name: 'help', description: 'Что умеет бот' }
 
 bot.on('bot_started', (ctx) => {
   if (ctx.chatId != null) { chats.add(ctx.chatId); saveChats(); }
+  // id размещения из ссылки ?start=…, для max_ad_report
+  const payload = (ctx.update as { payload?: string | null }).payload;
+  if (payload) appendFileSync('starts.jsonl', JSON.stringify({ ts: Date.now(), user_id: ctx.user?.user_id, payload }) + '\n');
   return ctx.reply('**Привет!** Я бот на MAX.', {
     format: 'markdown',
     attachments: [Keyboard.inlineKeyboard([[Keyboard.button.callback('Что умеешь?', 'help')]])],
@@ -303,6 +311,7 @@ import (
 	"crypto/subtle"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -331,6 +340,12 @@ func httpClient() *http.Client {
 func handle(ctx context.Context, api *maxbot.Api, u model.Update) {
 	switch u.UpdateType {
 	case model.UpdateBotStarted:
+		if u.Payload != "" { // id размещения из ссылки ?start=…, для max_ad_report
+			if f, err := os.OpenFile("starts.jsonl", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644); err == nil {
+				_ = json.NewEncoder(f).Encode(map[string]any{"ts": u.Timestamp, "user_id": u.UserID, "payload": u.Payload})
+				f.Close()
+			}
+		}
 		kb := model.NewKeyboard()
 		kb.AddRow().AddCallBack("Что умеешь?", "help")
 		msg := maxbot.NewMessage().SetChat(u.ChatID).SetFormat(model.FormatMarkdown).
@@ -440,7 +455,8 @@ README = """# Бот для MAX
 {run}
 
 Что уже учтено: адрес platform-api2.max.ru, токен в заголовке, учёт чатов без GET /chats,
-ответ на нажатия через POST /answers, секрет вебхука с проверкой за постоянное время.
+ответ на нажатия через POST /answers, секрет вебхука с проверкой за постоянное время,
+запись переходов по рекламным ссылкам `?start=…` в starts.jsonl (для max_tracking_links и max_ad_report).
 """
 
 RUN = {
@@ -465,7 +481,8 @@ the bot listens on an internal port behind a proxy, path `/max/webhook`.
 {run}
 
 Already handled: platform-api2.max.ru host, token in the header, chat tracking without GET /chats,
-button answers via POST /answers, constant-time webhook secret check.
+button answers via POST /answers, constant-time webhook secret check,
+ad link visits `?start=…` logged to starts.jsonl (for max_tracking_links and max_ad_report).
 """
 
 # Russian → English for comments, log lines and bot replies inside the templates
@@ -496,6 +513,8 @@ EN = [
     ("the Минцифры root", "the Russian Trusted Root CA"),
     ("HTTPS 443 на прокси перед ботом", "HTTPS 443 on a proxy in front of the bot"),
     ("# вебхук", "# webhook"),
+    ("учёт переходов по рекламным ссылкам ?start=…", "counts visits from ad links ?start=…"),
+    ("id размещения из ссылки ?start=…, для max_ad_report", "placement id from the ?start=… link, for max_ad_report"),
 ]
 
 

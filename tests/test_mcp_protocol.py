@@ -18,6 +18,7 @@ PUBLIC = {
     "max_migrate_from_telegram", "max_scaffold_bot", "max_validate_message", "max_build_message",
     "max_split_text", "max_convert_formatting", "max_deeplink", "max_mock_update", "max_mock_init_data",
     "max_bridge_mock", "max_check_webhook_secret", "server_status",
+    "max_tracking_links", "max_ad_report", "max_check_ad_post",
 }
 OPERATOR = {"max_bot_info", "max_send_message", "max_get_messages", "max_get_chat", "max_set_commands",
             "max_webhook", "max_get_updates", "max_api_request"}

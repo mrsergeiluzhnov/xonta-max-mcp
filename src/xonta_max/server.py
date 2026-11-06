@@ -16,7 +16,7 @@ from starlette.responses import JSONResponse
 from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
 
-from . import __version__, client, deeplinks, knowledge, lint, messages, mocks, scaffold, security
+from . import __version__, ads, client, deeplinks, knowledge, lint, messages, mocks, scaffold, security
 from .i18n import loc, set_lang, tr
 from .knowledge import VERIFIED_ON
 
@@ -39,6 +39,8 @@ max_migrate_from_telegram plans a port from Telegram Bot API; max_scaffold_bot g
 Messages: max_build_message, max_validate_message, max_split_text, max_convert_formatting.
 Links: max_deeplink (bot start, mini-app startapp, share-to-MAX without a bot, user mention).
 Testing: max_mock_update (webhook payloads + curl), max_mock_init_data and max_bridge_mock (window.WebApp emulator).
+Ads: max_api_reference topic='ads' (where to buy, channel monetization, marking), max_tracking_links (a link per placement),
+max_ad_report (cost per order, ROAS, ROMI with confidence intervals), max_check_ad_post (marking check).
 When the server runs locally with MAX_BOT_TOKEN, operator tools (max_send_message etc.) act as that bot.
 Always use platform-api2.max.ru and never suggest disabling TLS verification."""
 
@@ -58,7 +60,7 @@ mcp = MCPServer(
 )
 
 TOPIC = Literal["auth", "tls", "webhook", "messages", "keyboard", "formatting", "uploads", "chats",
-                "mini_apps", "init_data", "deeplinks", "access", "libraries", "sources"]
+                "mini_apps", "init_data", "deeplinks", "access", "libraries", "ads", "sources"]
 
 
 def _err(e: Exception) -> dict:
@@ -75,7 +77,7 @@ def max_api_reference(
 ) -> dict:
     """Look up current facts about the MAX Bot API and Mini Apps (MAX Bridge) with links to dev.max.ru.
 
-    Covers base URL and auth, the Russian Trusted Root CA, webhooks vs long polling, sending messages,
+    Covers base URL and auth, the Russian Trusted Root CA, advertising in MAX (topic 'ads'), webhooks vs long polling, sending messages,
     inline keyboards and callbacks, formatting, uploads, chat tracking without GET /chats, mini-apps,
     initData validation, deep links, who may create bots, official libraries. Language models usually know an
     outdated API (platform-api.max.ru, token in query, GET /chats) — use this before writing MAX code.
@@ -451,6 +453,65 @@ def server_status(lang: LangParam = None) -> dict:
         "ca_file": bool(os.environ.get("MAX_CA_FILE")),
         "sources": [knowledge.DOCS, knowledge.SCHEMA, knowledge.BRIDGE],
     }
+
+
+# ================================================================ ads
+
+@mcp.tool(annotations=RO)
+def max_tracking_links(
+    campaign: Annotated[str, Field(description="Campaign name, e.g. 'black friday'")],
+    placements: Annotated[list[dict], Field(description="Channels where the ad goes: [{name, cost?, erid?}]. name may be a title or max.ru link")],
+    bot_name: Annotated[str | None, Field(description="Your bot's public name: each placement gets max.ru/<bot>?start=<id>")] = None,
+    mini_app_bot: Annotated[str | None, Field(description="Bot with your mini-app: each placement gets ?startapp=<id>")] = None,
+    site_url: Annotated[str | None, Field(description="Landing page: each placement gets UTM tags and its erid")] = None,
+    utm_medium: str = "seeding",
+    promo_codes: Annotated[bool, Field(description="Also make one promo code per placement")] = True,
+    lang: LangParam = None,
+) -> dict:
+    """Make a separate tracking link (and promo code) for every channel where an ad is placed in MAX, so you can
+    see which placement brought users and sales. Bot links use ?start=<id>: the id arrives in bot_started.payload,
+    which works even for clicks that never leave the messenger. Returns a media plan as CSV.
+    Then feed the counts to max_ad_report."""
+    set_lang(lang)
+    try:
+        return ads.tracking_links(campaign, placements, bot_name, mini_app_bot, site_url, utm_medium, promo_codes)
+    except ValueError as e:
+        return _err(e)
+
+
+@mcp.tool(annotations=RO)
+def max_ad_report(
+    placements: Annotated[list[dict], Field(description="Per placement: {name, id?, cost, views?, clicks?, starts?, leads?, orders?, revenue?, margin_pct?}")],
+    events: Annotated[list | None, Field(description="Optional bot_started updates, {'payload': …} objects or payload strings; starts are counted per placement id")] = None,
+    campaign: Annotated[str | None, Field(description="Only count payloads of this campaign")] = None,
+    min_orders: Annotated[int, Field(ge=1, description="Below this many orders a placement is flagged as low data")] = 5,
+    lang: LangParam = None,
+) -> dict:
+    """Compare ad placements in MAX by real results: CPM, cost per click or bot start, cost per lead and per order,
+    ROAS, profit after ads and ROMI (with margin), conversion with a 95% confidence interval.
+    Says when a difference between channels may be chance and when there is too little data.
+    A calculator only: it does not touch ad accounts or move money."""
+    set_lang(lang)
+    try:
+        return ads.ad_report(placements, events, campaign, min_orders)
+    except ValueError as e:
+        return _err(e)
+
+
+@mcp.tool(annotations=RO)
+def max_check_ad_post(
+    text: Annotated[str, Field(description="Ad post text as it will be published")],
+    links: Annotated[list[str] | None, Field(description="Links used in buttons or elsewhere, if not in the text")] = None,
+    channel_subscribers: Annotated[int | None, Field(description="Subscribers of the channel where it goes")] = None,
+    channel_has_a_plus: Annotated[bool | None, Field(description="Whether the channel has the A+ mark (RKN registry)")] = None,
+    advertiser_site: Annotated[str | None, Field(description="Site with the advertiser's details, if they are not in the text")] = None,
+    lang: LangParam = None,
+) -> dict:
+    """Check an ad post for MAX against Russian ad marking rules: the 'Реклама' label at the top, advertiser details
+    (name and INN/OGRN or a site), an erid token in the link or text, the A+ mark for channels over 10,000 subscribers,
+    and the 4000-character limit. A hint, not legal advice; ORD registration is not checked."""
+    set_lang(lang)
+    return ads.check_ad_post(text, links, channel_subscribers, channel_has_a_plus, advertiser_site)
 
 
 # ================================================================ local-only: signatures with a real token

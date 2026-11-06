@@ -43,6 +43,9 @@ Generated bots (`max_scaffold_bot`) come with comments, README and replies in th
 | `max_mock_init_data` | Correctly signed mini-app initData for backend tests |
 | `max_bridge_mock` | `window.WebApp` emulator to build mini-apps in a normal browser on localhost |
 | `max_check_webhook_secret` | Checks or generates a webhook secret |
+| `max_tracking_links` | **Ads:** a separate bot link (`?start=`), mini-app link, UTM link and promo code for every channel where you place an ad, plus a media plan CSV |
+| `max_ad_report` | **Ads:** CPM, cost per click or bot start, per lead and per order, ROAS, ROMI, with 95% intervals — says when a difference between channels may be chance |
+| `max_check_ad_post` | **Ads:** checks a post against Russian ad marking rules: the «Реклама» label, advertiser details, erid token, A+ mark for big channels |
 | `max_verify_signature` | Local only. Verifies initData, requestContact phone hash, request_contact vcf hash |
 | `max_bot_info`, `max_send_message`, `max_get_messages`, `max_get_chat`, `max_set_commands`, `max_webhook`, `max_get_updates`, `max_api_request` | Local only, with `MAX_BOT_TOKEN`. Act as your bot. Bodies are validated before sending, removed methods are refused |
 
@@ -92,6 +95,15 @@ just without the operator tools.
 - "Make a MAX bot in TypeScript with a webhook"
 - "Add a 'Send to MAX' button to my site's article pages"
 - "Give me a signed initData and a test for my FastAPI validator"
+- "I'm buying ads in 5 MAX channels for my shop's bot — make tracking links, then tell me which channel paid off"
+- "Where can I buy ads in MAX and what does it cost?"
+
+## Ads
+
+The bot templates log every `bot_started` with a payload to `starts.jsonl`. Give each channel its own link from
+`max_tracking_links`, run the campaign, then pass the counts and orders to `max_ad_report`. Bot links work even when
+users never leave the messenger, which UTM-based analytics can't see. The server only calculates and checks text:
+it never touches ad accounts or budgets. `max_check_ad_post` is a hint, not legal advice.
 
 ## Sources
 
@@ -151,6 +163,9 @@ MCP-сервер для разработки ботов и мини-прилож
 | `max_mock_init_data` | Правильно подписанные initData для тестов бэкенда |
 | `max_bridge_mock` | Эмулятор `window.WebApp`, чтобы делать мини-приложение в обычном браузере на localhost |
 | `max_check_webhook_secret` | Проверяет или генерирует секрет вебхука |
+| `max_tracking_links` | **Реклама:** для каждого канала, где размещаете рекламу, своя ссылка на бота (`?start=`), мини-приложение, сайт с UTM и промокод, плюс медиаплан в CSV |
+| `max_ad_report` | **Реклама:** CPM, цена перехода или старта бота, заявки и заказа, ROAS, ROMI с 95%-интервалами — показывает, когда разница между каналами может быть случайной |
+| `max_check_ad_post` | **Реклама:** проверяет пост по правилам маркировки: пометка «Реклама», сведения о рекламодателе, токен erid, отметка A+ для больших каналов |
 | `max_verify_signature` | Только локально. Проверяет initData, хеш телефона из requestContact, хеш контакта от кнопки request_contact |
 | `max_bot_info`, `max_send_message`, `max_get_messages`, `max_get_chat`, `max_set_commands`, `max_webhook`, `max_get_updates`, `max_api_request` | Только локально, с `MAX_BOT_TOKEN`. Работают от имени вашего бота. Тело проверяется до отправки, удалённые методы не вызываются |
 
@@ -199,6 +214,15 @@ https://mcp.xonta.ru/max/mcp
 - «Сделай бота для MAX на TypeScript с вебхуком»
 - «Добавь кнопку „Отправить в MAX“ на страницы статей моего сайта»
 - «Дай подписанные initData и тест для моего валидатора на FastAPI»
+- «Покупаю рекламу в 5 каналах MAX для бота магазина — сделай ссылки для учёта, а потом скажи, какой канал окупился»
+- «Где купить рекламу в MAX и сколько это стоит?»
+
+## Реклама
+
+Шаблоны ботов пишут каждый `bot_started` с payload в `starts.jsonl`. Дайте каждому каналу свою ссылку из
+`max_tracking_links`, проведите кампанию и передайте переходы и заказы в `max_ad_report`. Ссылки на бота считают даже тех,
+кто не выходил из мессенджера, — UTM-аналитика таких не видит. Сервер только считает и проверяет текст:
+к рекламным кабинетам и бюджетам он не обращается. `max_check_ad_post` — подсказка, а не юридическое заключение.
 
 ## Источники
 

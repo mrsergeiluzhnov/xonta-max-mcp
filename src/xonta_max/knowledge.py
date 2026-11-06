@@ -529,6 +529,53 @@ TOPICS: dict[str, dict] = {
         ),
         "source": DOCS,
     },
+    "ads": {
+        "title": "Реклама в MAX: где купить и как заработать на канале", "title_en": "Ads in MAX: where to buy and how channels earn",
+        "text": (
+            "Купить рекламу. VK Реклама (с 2026-10-05): объявления в каналах от 1000 подписчиков, текст и текст с картинкой после контента канала, "
+            "ведут на канал, пост или сайт; показ по аудитории (гео, демография, интересы), конкретный канал не выбрать. "
+            "Яндекс Директ: с мая 2026 рекламные посты в каналах через Единую перформанс-кампанию (вкладка «Реклама в мессенджерах»), "
+            "с октября 2026 блоки под контентом каналов с подбором под пользователя, оплата за клик, можно задать цену подписчика. "
+            "VK AdBlogger (с 2026-11-02): рекламодатель сам выбирает каналы по теме, числу подписчиков и отметке A+, цену ставит автор. "
+            "Плюс биржи посевов и прямая договорённость с владельцем канала. "
+            "Ориентиры цен: медианный CPM посевов в каналах 606 ₽ в июне 2026 (352 ₽ в январе, eLama и Telega.in); "
+            "подписчик через VK Рекламу 8–37 ₽ в феврале–апреле 2026 (данные агентства VMAKS). Цены быстро растут — проверяйте свежие. "
+            "Заработать на своём канале. РСЯ: канал старше месяца, от 1000 подписчиков, последний пост моложе 2 недель, у постов от 100 просмотров за 48 ч; "
+            "при 10 000+ подписчиков — регистрация в реестре РКН. Бот Яндекса добавляется админом и публикует 1–28 рекламных постов в неделю, не больше 4 в день; "
+            "оплата по аукциону или по своей цене CPM (биржевая модель). Ещё — VK AdBlogger и прямые размещения. "
+            "Маркировка (38-ФЗ): пометка «Реклама» до основного текста, сведения о рекламодателе (название и ИНН/ОГРН или ссылка на сайт с ними), "
+            "токен erid от ОРД в ссылке или тексте, полученный до публикации. С 18.03.2026 MAX считается соцсетью: в каналах 10 000+ без отметки A+ рекламу размещать нельзя. "
+            "Штрафы для юрлиц — до 500 000 ₽ за каждый немаркированный материал. Для учёта эффективности: max_tracking_links и max_ad_report; проверка поста — max_check_ad_post."
+        ),
+        "text_en": (
+            "Buying ads. VK Ads (since 2026-10-05): ads inside channels with 1,000+ subscribers, text or text with image after the channel content, "
+            "leading to a channel, post or website; audience targeting (geo, demographics, interests), you can't pick a specific channel. "
+            "Yandex Direct: since May 2026 promoted posts in channels via the Unified Performance Campaign (Messenger ads tab); "
+            "since October 2026 blocks under channel content matched per user, pay per click, a target cost per subscriber can be set. "
+            "VK AdBlogger (since 2026-11-02): advertisers pick channels themselves by topic, subscribers and the A+ mark; authors set the price. "
+            "Plus seeding exchanges and direct deals with channel owners. "
+            "Price benchmarks: median CPM for channel seeding 606 RUB in June 2026 (352 RUB in January, eLama and Telega.in); "
+            "a subscriber via VK Ads cost 8–37 RUB in Feb–Apr 2026 (VMAKS agency data). Prices rise fast — check fresh numbers. "
+            "Earning on your channel. Yandex Advertising Network: channel older than a month, 1,000+ subscribers, last post under 2 weeks old, posts get 100+ views in 48 h; "
+            "10,000+ subscribers require the Roskomnadzor bloggers registry. The Yandex bot is added as admin and publishes 1–28 ad posts a week, at most 4 a day; "
+            "paid by auction or by your own CPM (exchange model). Also VK AdBlogger and direct deals. "
+            "Marking (Russian law 38-FZ): the label 'Reklama' (advertisement) before the main text, advertiser details (name and INN/OGRN tax ids, or a link to a site showing them), "
+            "an erid token from an ad-data operator (ORD) in the link or text, obtained before publishing. Since 2026-03-18 MAX counts as a social network: "
+            "channels with 10,000+ subscribers without the A+ mark must not carry ads. Fines for companies are up to 500,000 RUB per unmarked item. "
+            "To measure results use max_tracking_links and max_ad_report; to check a post use max_check_ad_post."
+        ),
+        "source": "https://adindex.ru/news/digital/2026/10/5/349537.phtml",
+        "sources": [
+            "https://adindex.ru/news/digital/2026/10/5/349537.phtml",
+            "https://adindex.ru/news/marketing/2026/05/19/345078.phtml",
+            "https://adindex.ru/news/digital/2026/10/7/349620.phtml",
+            "https://ppc.world/news/vk-adblogger-otkryl-biznesu-reklamu-v-kanalah-max-a-avtoram-vozmozhnost-monetizacii/",
+            "https://yandex.com/support/partner/ru/messengers/add-channel",
+            "https://www.unisender.com/ru/blog/news/cpm-reklamy-v-kanalah-max-vyros-na-72-za-polgoda/",
+            "https://www.sostav.ru/blogs/288427/82781",
+            "https://pravo163.ru/markirovka-reklamy-v-max-trebovaniya-zakonodatelstva-i-praktika-primeneniya/",
+        ],
+    },
     "sources": {
         "title": "Первоисточники", "title_en": "Primary sources",
         "text": (

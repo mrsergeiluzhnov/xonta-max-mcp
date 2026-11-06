@@ -59,7 +59,7 @@ PulseMCP, mcp.so, MCP Market, LobeHub, mcpservers.org, Cline, Docker MCP Catalog
 Line for `punkpeye/awesome-mcp-servers`, section **💬 Communication**, in alphabetical order:
 
 ```markdown
-- [mrsergeiluzhnov/xonta-max-mcp](https://github.com/mrsergeiluzhnov/xonta-max-mcp) [![mrsergeiluzhnov/xonta-max-mcp MCP server](https://glama.ai/mcp/servers/mrsergeiluzhnov/xonta-max-mcp/badges/score.svg)](https://glama.ai/mcp/servers/mrsergeiluzhnov/xonta-max-mcp) 🐍 ☁️ 🏠 🍎 🪟 🐧 - Build bots and mini-apps for the MAX messenger (max.ru), in English or Russian: current Bot API facts, linting for outdated API usage, Telegram → MAX migration, bot scaffolding, deep links and a share-to-MAX button, signed initData and a MAX Bridge emulator for tests. Hosted `https://mcp.xonta.ru/max/mcp` or `uvx xonta-max-mcp`.
+- [mrsergeiluzhnov/xonta-max-mcp](https://github.com/mrsergeiluzhnov/xonta-max-mcp) [![mrsergeiluzhnov/xonta-max-mcp MCP server](https://glama.ai/mcp/servers/mrsergeiluzhnov/xonta-max-mcp/badges/score.svg)](https://glama.ai/mcp/servers/mrsergeiluzhnov/xonta-max-mcp) 🐍 ☁️ 🏠 🍎 🪟 🐧 - Build bots and mini-apps for the MAX messenger (max.ru), in English or Russian: current Bot API facts, linting for outdated API usage, Telegram → MAX migration, bot scaffolding, deep links and a share-to-MAX button, ad tracking links and ROI reports, ad marking checks, signed initData and a MAX Bridge emulator for tests. Hosted `https://mcp.xonta.ru/max/mcp` or `uvx xonta-max-mcp`.
 ```
 
 ## 4. Audience

@@ -80,6 +80,22 @@ CALLS = [
     ("max_check_webhook_secret", {}),
     ("max_check_webhook_secret", {"secret": "a"}),
     ("server_status", {}),
+    ("max_tracking_links", {"campaign": "Black Friday", "placements": [{"name": "Beauty news", "cost": 5000}, {"name": "Beauty news"}],
+                            "bot_name": "shop_bot", "mini_app_bot": "shop_bot", "site_url": "https://shop.ru/sale"}),
+    ("max_tracking_links", {"campaign": "c", "placements": [{"name": "a"}]}),
+    ("max_tracking_links", {"campaign": "c", "placements": [], "bot_name": "b"}),
+    ("max_tracking_links", {"campaign": "c", "placements": [{"name": "a"}], "site_url": "shop.ru"}),
+    ("max_ad_report", {"placements": [
+        {"name": "A", "id": "c_a", "cost": 5000, "views": 9000, "orders": 12, "revenue": 60000, "margin_pct": 40},
+        {"name": "B", "cost": 3000, "starts": 120, "orders": 3}, {"name": "C", "cost": 100, "clicks": 9, "orders": 0}],
+        "events": ["c_a", {"payload": "c_a"}], "campaign": "c"}),
+    ("max_ad_report", {"placements": [{"name": "A", "cost": 5000, "orders": 100}, {"name": "B", "cost": 5000, "orders": 20}]}),
+    ("max_ad_report", {"placements": [{"name": "A"}]}),
+    ("max_ad_report", {"placements": []}),
+    ("max_check_ad_post", {"text": "Best cream https://shop.ru/sale", "channel_subscribers": 20000, "channel_has_a_plus": False}),
+    ("max_check_ad_post", {"text": "Great. " * 30 + "Реклама. ООО «Ромашка», ИНН 7701234567 erid: AAAAAA111 erid: BBBBBB222 https://a.ru/",
+                           "channel_subscribers": 20000}),
+    ("max_check_ad_post", {"text": "Реклама https://a.ru/?erid=AAAAAA111 " + "x" * 4000, "advertiser_site": "https://a.ru"}),
     ("max_verify_signature", {"kind": "init_data", "init_data": "a=1&hash=x", "bot_token": "t"}),
     ("max_verify_signature", {"kind": "init_data", "init_data": "auth_date=1&hash=x%2525", "bot_token": "t"}),
     ("max_verify_signature", {"kind": "init_data", "init_data": "auth_date=z&hash=x", "bot_token": "t"}),
@@ -123,7 +139,7 @@ def _out(res):
 def _russian_bits(obj, path="$"):
     """Yield (path, text) for every string that has Cyrillic."""
     if isinstance(obj, str):
-        if CYR.search(obj):
+        if CYR.search(re.sub(r"«?Реклама»?|ООО «Ромашка»|ИНН", "", obj)):
             yield path, obj[:160]
     elif isinstance(obj, dict):
         for k, v in obj.items():
