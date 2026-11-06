@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "ru.xonta/max",
   "title": "Xonta MAX",
-  "description": "MAX messenger bots and mini-apps: current Bot API, code checks, Telegram migration, deep links",
+  "description": "MAX messenger bots and mini-apps in English or Russian: Bot API, code checks, Telegram migration",
   "version": "0.1.0",
   "websiteUrl": "https://xonta.ru",
   "repository": {
@@ -16,7 +16,9 @@
       "identifier": "xonta-max-mcp",
       "version": "0.1.0",
       "runtimeHint": "uvx",
-      "transport": { "type": "stdio" },
+      "transport": {
+        "type": "stdio"
+      },
       "environmentVariables": [
         {
           "name": "MAX_BOT_TOKEN",
@@ -27,6 +29,11 @@
         {
           "name": "MAX_CA_FILE",
           "description": "Path to the Russian Trusted Root CA (Минцифры) PEM, needed to reach platform-api2.max.ru",
+          "isRequired": false
+        },
+        {
+          "name": "XONTA_MAX_LANG",
+          "description": "Default answer language: ru (default) or en",
           "isRequired": false
         }
       ]

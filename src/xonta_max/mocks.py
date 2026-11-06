@@ -7,9 +7,15 @@ import random
 import shlex
 import time
 
+from .i18n import tr
 from .knowledge import UPDATE_TYPES
 
-USER = {"user_id": 100500, "first_name": "Тест", "last_name": "Пользователь", "username": "test_user", "is_bot": False, "last_activity_time": 0}
+def _user() -> dict:
+    return {"user_id": 100500, "first_name": tr("Тест", "Test"), "last_name": tr("Пользователь", "User"),
+            "username": "test_user", "is_bot": False, "last_activity_time": 0}
+
+
+USER_ID = 100500
 BOT = {"user_id": 900001, "first_name": "Test bot", "username": "test_bot", "is_bot": True}
 
 
@@ -23,24 +29,25 @@ def _merge(base: dict, over: dict) -> dict:
 def _message(chat_id: int, text: str, chat_type: str, ts: int, payload_buttons: bool = False) -> dict:
     mid = f"mid.{random.getrandbits(64):016x}"
     msg = {
-        "sender": USER if chat_type != "channel" else None,
-        "recipient": {"chat_id": chat_id, "chat_type": chat_type, "user_id": USER["user_id"] if chat_type == "dialog" else None},
+        "sender": _user() if chat_type != "channel" else None,
+        "recipient": {"chat_id": chat_id, "chat_type": chat_type, "user_id": USER_ID if chat_type == "dialog" else None},
         "timestamp": ts,
         "body": {"mid": mid, "seq": random.randint(1, 10**12), "text": text, "attachments": None, "markup": None},
     }
     if payload_buttons:
         msg["sender"] = BOT
-        msg["body"]["attachments"] = [{"type": "inline_keyboard", "payload": {"buttons": [[{"type": "callback", "text": "Да", "payload": "yes"}]]}}]
+        msg["body"]["attachments"] = [{"type": "inline_keyboard", "payload": {"buttons": [[{"type": "callback", "text": tr("Да", "Yes"), "payload": "yes"}]]}}]
     return msg
 
 
-def make_update(update_type: str, text: str = "Привет", payload: str | None = None, chat_id: int = -70000000000001,
+def make_update(update_type: str, text: str | None = None, payload: str | None = None, chat_id: int = -70000000000001,
                 chat_type: str = "dialog", overrides: dict | None = None) -> dict:
     if update_type not in UPDATE_TYPES:
         raise ValueError(f"update_type: {', '.join(UPDATE_TYPES)}")
+    text = text if text is not None else tr("Привет", "Hello")
     ts = int(time.time() * 1000)
     if chat_type == "dialog" and chat_id < 0:
-        chat_id = 30000000 + USER["user_id"]
+        chat_id = 30000000 + USER_ID
     base: dict = {"update_type": update_type, "timestamp": ts}
     loc = {"user_locale": "ru"}
     is_channel = chat_type == "channel"
@@ -50,34 +57,34 @@ def make_update(update_type: str, text: str = "Привет", payload: str | Non
         base |= {"message": _message(chat_id, text, chat_type, ts)}
     elif update_type == "message_callback":
         base |= {
-            "callback": {"timestamp": ts, "callback_id": f"cb.{random.getrandbits(48):012x}", "payload": payload or "yes", "user": USER},
-            "message": _message(chat_id, "Подтвердить?", chat_type, ts - 5000, payload_buttons=True),
+            "callback": {"timestamp": ts, "callback_id": f"cb.{random.getrandbits(48):012x}", "payload": payload or "yes", "user": _user()},
+            "message": _message(chat_id, tr("Подтвердить?", "Confirm?"), chat_type, ts - 5000, payload_buttons=True),
         } | loc
     elif update_type == "message_removed":
-        base |= {"message_id": f"mid.{random.getrandbits(64):016x}", "chat_id": chat_id, "user_id": USER["user_id"]}
+        base |= {"message_id": f"mid.{random.getrandbits(64):016x}", "chat_id": chat_id, "user_id": USER_ID}
     elif update_type in ("comment_created", "comment_edited"):
         m = _message(chat_id, text, "channel", ts)
-        m["sender"] = USER
+        m["sender"] = _user()
         m["recipient"]["post_id"] = f"mid.{random.getrandbits(64):016x}"
         base |= {"message": m}
     elif update_type == "comment_removed":
-        base |= {"message_id": f"mid.{random.getrandbits(64):016x}", "chat_id": chat_id, "user_id": USER["user_id"], "post_id": f"mid.{random.getrandbits(64):016x}"}
+        base |= {"message_id": f"mid.{random.getrandbits(64):016x}", "chat_id": chat_id, "user_id": USER_ID, "post_id": f"mid.{random.getrandbits(64):016x}"}
     elif update_type in ("bot_added", "bot_removed"):
-        base |= {"chat_id": chat_id, "user": USER, "is_channel": is_channel}
+        base |= {"chat_id": chat_id, "user": _user(), "is_channel": is_channel}
     elif update_type == "user_added":
-        base |= {"chat_id": chat_id, "user": USER, "is_channel": is_channel, "inviter_id": 100501}
+        base |= {"chat_id": chat_id, "user": _user(), "is_channel": is_channel, "inviter_id": 100501}
     elif update_type == "user_removed":
-        base |= {"chat_id": chat_id, "user": USER, "is_channel": is_channel, "admin_id": 100501}
+        base |= {"chat_id": chat_id, "user": _user(), "is_channel": is_channel, "admin_id": 100501}
     elif update_type == "bot_started":
-        base |= {"chat_id": chat_id, "user": USER, "payload": payload} | loc
+        base |= {"chat_id": chat_id, "user": _user(), "payload": payload} | loc
     elif update_type in ("bot_stopped", "dialog_cleared", "dialog_removed", "dialog_unmuted"):
-        base |= {"chat_id": chat_id, "user": USER} | loc
+        base |= {"chat_id": chat_id, "user": _user()} | loc
     elif update_type == "dialog_muted":
-        base |= {"chat_id": chat_id, "user": USER, "muted_until": ts + 3600_000} | loc
+        base |= {"chat_id": chat_id, "user": _user(), "muted_until": ts + 3600_000} | loc
     elif update_type == "chat_title_changed":
-        base |= {"chat_id": chat_id, "user": USER, "title": text}
+        base |= {"chat_id": chat_id, "user": _user(), "title": text}
     elif update_type == "bot_admin_permissions_changed":
-        base |= {"chat_id": chat_id, "user_id": USER["user_id"], "bot_id": BOT["user_id"], "is_channel": is_channel,
+        base |= {"chat_id": chat_id, "user_id": USER_ID, "bot_id": BOT["user_id"], "is_channel": is_channel,
                  "is_admin": True, "permissions": ["read_all_messages", "write"]}
     if overrides:
         base = _merge(base, overrides)
@@ -172,7 +179,7 @@ BRIDGE_MOCK_JS = r"""/* MAX Bridge mock for local development. Generated by Xont
     restoreScreenBrightness: function () { return Promise.resolve({ maxBrightness: false }); },
     getViewportSize: function () { return Promise.resolve({ height: String(innerHeight), width: String(innerWidth) }); },
     requestContact: function () {
-      if (!confirm('[MAX mock] Поделиться номером ' + CFG.contact.phone + '?')) return Promise.reject({ error: { code: 'client.request_phone.user_refused_provide_phone_number' } });
+      if (!confirm(CFG.text.sharePhone + ' ' + CFG.contact.phone + '?')) return Promise.reject({ error: { code: 'client.request_phone.user_refused_provide_phone_number' } });
       return Promise.resolve(CFG.contact);
     },
     enableClosingConfirmation: function () { window.onbeforeunload = function () { return ''; }; log('closing confirmation on'); },
@@ -189,7 +196,7 @@ BRIDGE_MOCK_JS = r"""/* MAX Bridge mock for local development. Generated by Xont
     shareMaxContent: function (p) { if (!needsGesture('shareMaxContent')) return Promise.resolve(); log('shareMaxContent', p);
       if (p && (p.text || p.link)) window.open('https://max.ru/:share?text=' + encodeURIComponent([p.text, p.link].filter(Boolean).join(' ')), '_blank', 'noopener');
       return Promise.resolve(); },
-    openCodeReader: function () { var v = prompt('[MAX mock] Содержимое QR-кода:', 'https://max.ru'); return v === null ? Promise.reject({ error: { code: 'client.code_reader.cancelled' } }) : Promise.resolve(v); }
+    openCodeReader: function () { var v = prompt(CFG.text.qr, 'https://max.ru'); return v === null ? Promise.reject({ error: { code: 'client.code_reader.cancelled' } }) : Promise.resolve(v); }
   };
   // Esc emulates the header Back button
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && window.WebApp.BackButton.isVisible) backHandlers.forEach(function (h) { h(); }); });

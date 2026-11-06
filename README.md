@@ -1,6 +1,6 @@
 # Xonta MAX
 
-MCP server for building bots and mini-apps for the MAX messenger (max.ru).
+MCP server for building bots and mini-apps for the MAX messenger (max.ru), in English and Russian.
 Free and open source.
 
 <!-- mcp-name: ru.xonta/max -->
@@ -15,6 +15,13 @@ Language models still write the old API. This server gives an AI agent current f
 check, generate and test MAX code, so the result works on the first try.
 
 You don't need your own bot for most of it. Only the operator tools need a token.
+
+## Languages
+
+Every answer comes in English or Russian. Each tool takes `lang: "en"` or `lang: "ru"`, and agents pick the
+user's language on their own. The default is Russian; set `XONTA_MAX_LANG=en` to make it English.
+The official MAX docs are in Russian only, so this is also the easiest way to read them in English.
+Generated bots (`max_scaffold_bot`) come with comments, README and replies in the chosen language.
 
 ## Tools
 
@@ -67,7 +74,8 @@ The hosted server never accepts bot tokens: tools that need one are switched off
       "args": ["xonta-max-mcp"],
       "env": {
         "MAX_BOT_TOKEN": "your token",
-        "MAX_CA_FILE": "/path/to/russian_trusted_root_ca.pem"
+        "MAX_CA_FILE": "/path/to/russian_trusted_root_ca.pem",
+        "XONTA_MAX_LANG": "en"
       }
     }
   }
@@ -104,7 +112,7 @@ MIT
 
 # Xonta MAX — по-русски
 
-MCP-сервер для разработки ботов и мини-приложений для мессенджера MAX (max.ru).
+MCP-сервер для разработки ботов и мини-приложений для мессенджера MAX (max.ru), на русском и английском.
 Бесплатный, с открытым кодом.
 
 ## Зачем
@@ -115,6 +123,13 @@ MCP-сервер для разработки ботов и мини-прилож
 проверяют, генерируют и тестируют код под MAX, чтобы всё заработало с первого раза.
 
 Для большинства инструментов свой бот не нужен. Токен нужен только инструментам управления ботом.
+
+## Языки
+
+Все ответы — на русском или английском. У каждого инструмента есть параметр `lang: "ru"` или `lang: "en"`,
+агент сам выбирает язык пользователя. По умолчанию русский; `XONTA_MAX_LANG=en` делает английский языком по умолчанию.
+Официальная документация MAX есть только на русском, так что для иностранных разработчиков это ещё и способ прочитать её по-английски.
+Сгенерированные боты (`max_scaffold_bot`) получают комментарии, README и ответы на выбранном языке.
 
 ## Инструменты
 
