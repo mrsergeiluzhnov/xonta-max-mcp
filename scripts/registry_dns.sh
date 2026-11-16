@@ -13,7 +13,19 @@ DOMAIN=${DOMAIN:-xonta.ru}
 DIR="$HOME/.xonta-registry"
 KEY="$DIR/key.pem"
 
+# macOS ships LibreSSL, which can't make Ed25519 keys: prefer Homebrew's OpenSSL if it is there
+if openssl version 2>/dev/null | grep -q LibreSSL; then
+  for p in "$(brew --prefix openssl 2>/dev/null)/bin" /opt/homebrew/opt/openssl@3/bin /usr/local/opt/openssl@3/bin; do
+    if [ -x "$p/openssl" ]; then PATH="$p:$PATH"; break; fi
+  done
+fi
+if openssl version 2>/dev/null | grep -q LibreSSL; then
+  echo "This openssl is LibreSSL and can't make Ed25519 keys. Run: brew install openssl  — then this script again."
+  exit 1
+fi
+
 mkdir -p "$DIR" && chmod 700 "$DIR"
+[ -s "$KEY" ] || rm -f "$KEY"   # drop an empty file left by a failed attempt
 if [ ! -f "$KEY" ]; then
   openssl genpkey -algorithm Ed25519 -out "$KEY"
   chmod 600 "$KEY"
