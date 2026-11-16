@@ -57,8 +57,9 @@ To make English the default on a server, add `Environment=XONTA_MAX_LANG=en` to 
 
 ## 3. Catalogs
 
-Same as steps 5–8 in the customs PUBLISHING.md: Glama (Add Server → Claim), Smithery (by public URL),
-PulseMCP, mcp.so, MCP Market, LobeHub, mcpservers.org, Cline, Docker MCP Catalog.
+PulseMCP and other aggregators pick the server up from the official registry by themselves within a day or two.
+By hand: Glama (Claim once the card appears, or Add Server), mcp.so, MCP Market, LobeHub, mcpservers.org.
+Smithery stopped taking new servers on 2026-10-31 and is now a read-only directory.
 
 Line for `punkpeye/awesome-mcp-servers`, section **💬 Communication**, in alphabetical order:
 
@@ -141,8 +142,9 @@ curl -s -X POST https://mcp.xonta.ru/max/mcp \
 
 ## 3. Каталоги
 
-Те же шаги 5–8 из PUBLISHING.md у customs: Glama (Add Server → Claim), Smithery (по публичному URL),
-PulseMCP, mcp.so, MCP Market, LobeHub, mcpservers.org, Cline, Docker MCP Catalog.
+PulseMCP и другие агрегаторы сами подхватят сервер из официального реестра за день-два.
+Вручную: Glama (Claim, когда появится карточка, или Add Server), mcp.so, MCP Market, LobeHub, mcpservers.org.
+Smithery с 31.10.2026 не принимает новые серверы и работает только как каталог.
 
 Строка для `punkpeye/awesome-mcp-servers`, раздел **💬 Communication**, по алфавиту — в английской части выше.
 Каталоги англоязычные, поэтому строка на английском.
