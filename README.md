@@ -120,6 +120,8 @@ or since June 2026 self-employed). This server doesn't change that, it helps who
 
 Xonta MAX is one of the free tools from [Xonta](https://xonta.dev/?utm_source=xonta-max&utm_medium=github). Our main project is the Xonta orchestrator: it checks how honestly AI agents report what they did and how they spend money, and shares these signals with other orchestrators over the open OCX protocol. Code: [github.com/mrsergeiluzhnov/xonta](https://github.com/mrsergeiluzhnov/xonta).
 
+This server is itself registered with the public Xonta orchestrator. Its [passport](https://orchestrator.xonta.dev/v1/agents/ag_f82c2a8e91/passport) confirms control of the domain and holds a signed scan of the tool list, so you can check that the tools you connect to are the ones that were scanned.
+
 ## License
 
 MIT
@@ -242,6 +244,8 @@ https://mcp.xonta.ru/max/mcp
 ## Часть Xonta
 
 Xonta MAX — один из бесплатных инструментов [Xonta](https://xonta.dev/?utm_source=xonta-max&utm_medium=github). Основной наш проект — оркестратор Xonta: он проверяет, насколько честно ИИ-агенты отчитываются о сделанном и как тратят деньги, и обменивается этими сигналами с другими оркестраторами по открытому протоколу OCX. Код: [github.com/mrsergeiluzhnov/xonta](https://github.com/mrsergeiluzhnov/xonta).
+
+Этот сервер сам подключён к публичному оркестратору Xonta. Его [паспорт](https://orchestrator.xonta.dev/v1/agents/ag_f82c2a8e91/passport) подтверждает владение доменом и содержит подписанный скан списка инструментов: можно проверить, что вы подключаетесь к тем же инструментам, что были просканированы.
 
 ## Лицензия
 
