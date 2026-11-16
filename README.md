@@ -116,6 +116,10 @@ open an issue and I'll update.
 Creating a bot on MAX requires a verified profile on business.max.ru (organisation, sole proprietor,
 or since June 2026 self-employed). This server doesn't change that, it helps whoever builds the bot.
 
+## Part of Xonta
+
+Xonta MAX is one of the free tools from [Xonta](https://xonta.dev/?utm_source=xonta-max&utm_medium=github). Our main project is the Xonta orchestrator: it checks how honestly AI agents report what they did and how they spend money, and shares these signals with other orchestrators over the open OCX protocol. Code: [github.com/mrsergeiluzhnov/xonta](https://github.com/mrsergeiluzhnov/xonta).
+
 ## License
 
 MIT
@@ -234,6 +238,10 @@ https://mcp.xonta.ru/max/mcp
 
 Создать бота в MAX можно только с подтверждённым профилем на business.max.ru (организация, ИП,
 с июня 2026 — самозанятый). Сервер этого не обходит, он помогает тому, кто делает бота.
+
+## Часть Xonta
+
+Xonta MAX — один из бесплатных инструментов [Xonta](https://xonta.dev/?utm_source=xonta-max&utm_medium=github). Основной наш проект — оркестратор Xonta: он проверяет, насколько честно ИИ-агенты отчитываются о сделанном и как тратят деньги, и обменивается этими сигналами с другими оркестраторами по открытому протоколу OCX. Код: [github.com/mrsergeiluzhnov/xonta](https://github.com/mrsergeiluzhnov/xonta).
 
 ## Лицензия
 
