@@ -42,6 +42,6 @@ UNIT
 systemctl daemon-reload
 systemctl enable --now xonta-max
 systemctl restart xonta-max
-sleep 2
-curl -sf http://127.0.0.1:8766/health && echo
+for i in $(seq 1 20); do curl -sf http://127.0.0.1:8766/health >/dev/null && break; sleep 1; done
+curl -sf http://127.0.0.1:8766/health && echo || { echo "service did not answer, see: journalctl -u xonta-max -n 30"; exit 1; }
 curl -s http://127.0.0.1:8766/.well-known/mcp/server-card.json | python3 -c "import sys,json;d=json.load(sys.stdin);print(d['serverInfo'], len(d['tools']), 'tools')"
