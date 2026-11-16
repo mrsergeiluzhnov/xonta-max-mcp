@@ -8,7 +8,7 @@ PyPI package: **`xonta-max-mcp`**
 Repository: **`github.com/mrsergeiluzhnov/xonta-max-mcp`**
 
 Same order as Xonta Customs RU: GitHub → PyPI → official registry → VPS → catalogs.
-The registry key is the same one: the xonta.ru domain is already verified, no need to publish the auth file again.
+The xonta.ru domain is proven once with a DNS record (step 1); the same record serves customs and every later ru.xonta/* server.
 
 ## 1. GitHub, PyPI, registry
 
@@ -20,12 +20,16 @@ bash scripts/publish.sh
 ```
 
 The script creates the public repository, uploads the package to PyPI (asks for the token) and publishes
-`server.json` to the official registry. Log in to the registry once before that, with the same key as for customs:
+`server.json` to the official registry. Before that, prove once that xonta.ru is yours. One DNS record
+covers every `ru.xonta/*` server, customs included:
 
 ```bash
-PRIVATE_KEY="$(openssl pkey -in key.pem -noout -text | grep -A3 'priv:' | tail -n +2 | tr -d ' :\n')"
-mcp-publisher login http --domain xonta.ru --private-key "${PRIVATE_KEY}"
+bash scripts/registry_dns.sh        # prints the TXT record for the root of xonta.ru
+# add it in the Beget DNS panel, wait a few minutes, then:
+bash scripts/registry_dns.sh login
 ```
+
+The key is kept in `~/.xonta-registry/key.pem`, outside the repo. Back it up.
 
 ## 2. VPS (next to customs, port 8766)
 
@@ -88,7 +92,7 @@ or if any English answer still contains Russian. Run `pytest`, then `scripts/pub
 Репозиторий: **`github.com/mrsergeiluzhnov/xonta-max-mcp`**
 
 Порядок тот же, что у Xonta Customs RU: GitHub → PyPI → официальный реестр → VPS → каталоги.
-Ключ для реестра тот же: домен xonta.ru уже подтверждён, повторно размещать файл не нужно.
+Домен xonta.ru подтверждается один раз DNS-записью (шаг 1); та же запись подходит для customs и всех следующих серверов ru.xonta/*.
 
 ## 1. GitHub, PyPI, реестр
 
@@ -100,12 +104,16 @@ bash scripts/publish.sh
 ```
 
 Скрипт создаст публичный репозиторий, выложит пакет на PyPI (спросит токен) и опубликует
-`server.json` в официальном реестре. Перед этим один раз войдите в реестр тем же ключом, что и для customs:
+`server.json` в официальном реестре. Перед этим один раз подтвердите, что xonta.ru ваш. Одна DNS-запись
+работает для всех серверов `ru.xonta/*`, включая customs:
 
 ```bash
-PRIVATE_KEY="$(openssl pkey -in key.pem -noout -text | grep -A3 'priv:' | tail -n +2 | tr -d ' :\n')"
-mcp-publisher login http --domain xonta.ru --private-key "${PRIVATE_KEY}"
+bash scripts/registry_dns.sh        # покажет TXT-запись для корня xonta.ru
+# добавьте её в DNS-панели Beget, подождите несколько минут, затем:
+bash scripts/registry_dns.sh login
 ```
+
+Ключ хранится в `~/.xonta-registry/key.pem`, вне репозитория. Сделайте резервную копию.
 
 ## 2. VPS (рядом с customs, порт 8766)
 
