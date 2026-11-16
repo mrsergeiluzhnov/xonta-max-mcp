@@ -735,6 +735,9 @@ def main() -> None:
     )
     app = mcp.streamable_http_app(streamable_http_path="/mcp", stateless_http=True, json_response=True,
                                   transport_security=security_cfg, host=args.host)
+    from .web import BrowserCard
+
+    app = BrowserCard(app, os.environ.get("PUBLIC_MCP_URL", "https://mcp.xonta.ru/max/mcp"))
     uvicorn.run(app, host=args.host, port=args.port, proxy_headers=True, forwarded_allow_ips="*")
 
 

@@ -3,7 +3,7 @@
   "name": "ru.xonta/max",
   "title": "Xonta MAX",
   "description": "MAX messenger bots and mini-apps in English or Russian: Bot API, code checks, Telegram migration",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "websiteUrl": "https://xonta.ru",
   "repository": {
     "url": "https://github.com/mrsergeiluzhnov/xonta-max-mcp",
@@ -14,7 +14,7 @@
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "xonta-max-mcp",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "runtimeHint": "uvx",
       "transport": {
         "type": "stdio"
